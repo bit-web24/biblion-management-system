@@ -1,6 +1,6 @@
-from typing import Optional, List
+from typing import Optional
 from sqlalchemy import String
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
 class Base(DeclarativeBase):
@@ -12,7 +12,6 @@ class Base(DeclarativeBase):
 #     id: Mapped[int] = mapped_column(primary_key=True)
 #     name: Mapped[str] = mapped_column(String(30))
 #     fullname: Mapped[Optional[str]]
-#     biblia: Mapped[List["Biblion"]] = relationship(back_populates="user")
 #
 #     def __repr__(self) -> str:
 #         return f"User(id={self.id!r}, name={self.name!r}, fullname={self.fullname!r})"
@@ -23,9 +22,8 @@ class Biblion(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(String(100))
     author: Mapped[str] = mapped_column(String(40))
-    publisher: Mapped[str] = mapped_column(String(100))
-    description: Mapped[str] = mapped_column(String(500))
-    # user: Mapped[User] = relationship(back_populates="biblia")
+    publisher: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
+    description: Mapped[Optional[str]] = mapped_column(String(500), nullable=True)
 
     def __repr__(self) -> str:
         return f"Biblion(id={self.id!r}, name={self.name!r}, author={self.author!r}, publisher={self.publisher!r})"

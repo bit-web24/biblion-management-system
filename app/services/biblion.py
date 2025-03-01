@@ -8,11 +8,11 @@ def get_all(session: SessionDep):
     return biblia
 
 def get(session: SessionDep, biblion_id: int):
-    biblion = session.query(Biblion.id == biblion_id).first()
+    biblion = session.query(Biblion).filter(Biblion.id == biblion_id).first()
     return biblion
 
 def add(session: SessionDep, biblion: BiblionCreate):
-    session_biblion = Biblion(name=biblion.name, description=biblion.description)
+    session_biblion = Biblion(name=biblion.name, author=biblion.author, publisher=biblion.publisher, description=biblion.description)
     session.add(session_biblion)
     session.commit()
     session.refresh(session_biblion)

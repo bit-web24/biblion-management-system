@@ -4,7 +4,7 @@ from app.db import create_db_and_tables
 from app.routers import biblion
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_app: FastAPI):
     print("Starting: creating database and tables.")
     create_db_and_tables()
     yield
