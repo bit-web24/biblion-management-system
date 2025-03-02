@@ -11,18 +11,23 @@ from app.auth import (
 
 router = APIRouter(prefix="/auth")
 
-@router.post('/token', summary="Auth2 Token Endpoint", response_model=TokenSchema, include_in_schema=False)
-async def get_token(request: Request):
-    access_token = request.cookies.get('access_token')
+@router.post("/token", summary="OAuth2 Token Endpoint", response_model=TokenSchema, include_in_schema=False)
+async def login_for_access_token(
+    session: SessionDep,
+    form_data: OAuth2PasswordRequestForm = Depends()
+):
+    user = session.query(UserModel).filter(UserModel.username == form_data.username).first()
 
-    if not access_token:
+    if not user or not verify_password(form_data.password, user.password):
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="No access token found",
+            status_code=401,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
         )
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    access_token = create_access_token(subject=str(user.id))
 
+    return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.post('/signup', summary="Create new user", response_model=User)
