@@ -3,23 +3,30 @@ from app.schemas import BiblionCreate
 from app.models import Biblion
 
 
-def get_all(session: SessionDep):
-    biblia = session.query(Biblion).all()
-    return biblia
+def get_all_by_user(session: SessionDep, user_id: int):
+    return session.query(Biblion).filter(Biblion.user_id == user_id).all()
 
-def get(session: SessionDep, biblion_id: int):
-    biblion = session.query(Biblion).filter(Biblion.id == biblion_id).first()
-    return biblion
 
-def add(session: SessionDep, biblion: BiblionCreate):
-    session_biblion = Biblion(name=biblion.name, author=biblion.author, publisher=biblion.publisher, description=biblion.description)
+def get(session: SessionDep, biblion_id: int, user_id: int):
+    return session.query(Biblion).filter(Biblion.id == biblion_id, Biblion.user_id == user_id).first()
+
+
+def add(session: SessionDep, biblion: BiblionCreate, user_id: int):
+    session_biblion = Biblion(
+        name=biblion.name,
+        author=biblion.author,
+        publisher=biblion.publisher,
+        description=biblion.description,
+        user_id=user_id
+    )
     session.add(session_biblion)
     session.commit()
     session.refresh(session_biblion)
     return session_biblion
 
-def update(session: SessionDep, biblion_id: int, biblion: BiblionCreate):
-    _biblion = session.query(Biblion).filter(Biblion.id == biblion_id).first()
+
+def update(session: SessionDep, biblion_id: int, biblion: BiblionCreate, user_id: int):
+    _biblion = session.query(Biblion).filter(Biblion.id == biblion_id, Biblion.user_id == user_id).first()
     if not _biblion:
         return None
 
@@ -32,8 +39,9 @@ def update(session: SessionDep, biblion_id: int, biblion: BiblionCreate):
     session.refresh(_biblion)
     return _biblion
 
-def delete(session: SessionDep, biblion_id: int):
-    _biblion = session.query(Biblion).filter(Biblion.id == biblion_id).first()
+
+def delete(session: SessionDep, biblion_id: int, user_id: int):
+    _biblion = session.query(Biblion).filter(Biblion.id == biblion_id, Biblion.user_id == user_id).first()
     if not _biblion:
         return None
 

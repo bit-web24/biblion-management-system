@@ -28,3 +28,23 @@ def biblion_create(
     description: Optional[str] = Form(None),
 ) -> BiblionCreate:
     return BiblionCreate(name=name, author=author, publisher=publisher, description=description)
+
+
+class TokenSchema(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenPayload(BaseModel):
+    sub: int # _id
+    exp: int
+
+
+class User(BaseModel):
+    id: int
+    username: str
+    password: str
+
+
+class UserAuth(BaseModel):
+    username: str
+    password: str
