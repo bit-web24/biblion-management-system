@@ -63,8 +63,7 @@ async def get_current_user(
                 detail="Token expired",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-    except (JWTError, ValidationError) as e:
-        print(e)
+    except (JWTError, ValidationError):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Could not validate credentials",

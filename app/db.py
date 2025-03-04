@@ -4,11 +4,11 @@ from sqlalchemy.orm import Session
 from typing import Annotated
 from app.models import Base
 
-sqlite_file_name = "database.db"
-sqlite_url = f"sqlite:///{sqlite_file_name}"
+SQLLITE_FILE_NAME = "database.db"
+SQLLITE_URL = f"sqlite:///{SQLLITE_FILE_NAME}"
 
 connect_args = {"check_same_thread": False}
-engine = create_engine(sqlite_url, connect_args=connect_args)
+engine = create_engine(SQLLITE_URL, connect_args=connect_args)
 
 
 def get_session():
