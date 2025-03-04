@@ -44,3 +44,9 @@ Visit the [Documentation](http://127.0.0.1:8000/docs) to know, how:
 - to delete a book.
 
 
+# Linting and Formatting commands
+
+poetry run ruff check --fix .
+poetry run ruff format .
+
+poetry run pylint $(git ls-files '*.py')
