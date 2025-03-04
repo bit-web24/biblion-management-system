@@ -9,7 +9,7 @@ async def lifespan(_app: FastAPI):
     print("Starting: creating database and tables.")
     create_db_and_tables()
     yield
-    print("Shutting Down: performing cleanup.")
+    print("Shutting Down: performing cleanups.")
 
 
 app = FastAPI(title="Book Management System", version="1.0.0", lifespan=lifespan)
