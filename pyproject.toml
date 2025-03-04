@@ -6,7 +6,7 @@ authors = [
     {name = "Bittu Kumar",email = "bitweb24@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.12.3"
+requires-python = ">=3.12.3,<4"
 dependencies = [
     "annotated-types (==0.7.0)",
     "anyio (==4.8.0)",
