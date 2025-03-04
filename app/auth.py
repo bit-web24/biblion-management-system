@@ -24,35 +24,40 @@ def verify_password(password: str, hashed_pass: str) -> bool:
     return password_context.verify(password, hashed_pass)
 
 
-def create_access_token(subject: Union[str, Any], expires_delta: Optional[timedelta] = None) -> str:
+def create_access_token(
+    subject: Union[str, Any], expires_delta: Optional[timedelta] = None
+) -> str:
     expire = datetime.now(tz=timezone.utc) + (
-        expires_delta if expires_delta else timedelta(minutes=int(os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES', 60)))
+        expires_delta
+        if expires_delta
+        else timedelta(minutes=int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 60)))
     )
 
     to_encode = {"exp": int(expire.timestamp()), "sub": str(subject)}
-    secret_key = os.getenv('JWT_SECRET_KEY', 'default_secret')
-    algorithm = os.getenv('ALGORITHM', 'HS256')
+    secret_key = os.getenv("JWT_SECRET_KEY", "default_secret")
+    algorithm = os.getenv("ALGORITHM", "HS256")
 
     encoded_jwt = jwt.encode(to_encode, secret_key, algorithm=algorithm)
     return encoded_jwt
 
 
 # OAuth2 Authentication scheme
-reusable_oauth = OAuth2PasswordBearer(
-    tokenUrl="/auth/token",
-    scheme_name="JWT"
-)
+reusable_oauth = OAuth2PasswordBearer(tokenUrl="/auth/token", scheme_name="JWT")
 
 
-async def get_current_user(db: SessionDep, token: str = Depends(reusable_oauth)) -> User:
+async def get_current_user(
+    db: SessionDep, token: str = Depends(reusable_oauth)
+) -> User:
     try:
-        secret_key = os.getenv('JWT_SECRET_KEY', 'default_secret')
-        algorithm = os.getenv('ALGORITHM', 'HS256')
+        secret_key = os.getenv("JWT_SECRET_KEY", "default_secret")
+        algorithm = os.getenv("ALGORITHM", "HS256")
 
         payload = jwt.decode(token, secret_key, algorithms=[algorithm])
         token_data = TokenPayload(**payload)
 
-        if datetime.fromtimestamp(token_data.exp, tz=timezone.utc) < datetime.now(tz=timezone.utc):
+        if datetime.fromtimestamp(token_data.exp, tz=timezone.utc) < datetime.now(
+            tz=timezone.utc
+        ):
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token expired",

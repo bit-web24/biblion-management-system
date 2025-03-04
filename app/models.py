@@ -6,6 +6,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 class Base(DeclarativeBase):
     pass
 
+
 class User(Base):
     __tablename__ = "users"
 
@@ -15,7 +16,9 @@ class User(Base):
     biblion_entries = relationship("Biblion", back_populates="owner")
 
     def __repr__(self) -> str:
-        return f"User(id={self.id!r}, name={self.username!r}, password={self.password!r})"
+        return (
+            f"User(id={self.id!r}, name={self.username!r}, password={self.password!r})"
+        )
 
 
 class Biblion(Base):

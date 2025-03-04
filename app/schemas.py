@@ -2,8 +2,10 @@ from typing import Optional
 from fastapi import Form
 from pydantic import BaseModel
 
+
 class Base(BaseModel):
     pass
+
 
 class BiblionResponse(Base):
     id: int
@@ -15,11 +17,13 @@ class BiblionResponse(Base):
     class Config:
         from_attributes = True
 
+
 class BiblionCreate(Base):
     name: str
     author: str
     publisher: Optional[str] = None
     description: Optional[str] = None
+
 
 def biblion_create(
     name: str = Form(...),
@@ -27,15 +31,18 @@ def biblion_create(
     publisher: Optional[str] = Form(None),
     description: Optional[str] = Form(None),
 ) -> BiblionCreate:
-    return BiblionCreate(name=name, author=author, publisher=publisher, description=description)
+    return BiblionCreate(
+        name=name, author=author, publisher=publisher, description=description
+    )
 
 
 class TokenSchema(BaseModel):
     access_token: str
     token_type: str
 
+
 class TokenPayload(BaseModel):
-    sub: int # _id
+    sub: int  # _id
     exp: int
 
 

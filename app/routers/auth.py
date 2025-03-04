@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response, status, HTTPException, Depends, Request
+from fastapi import APIRouter, Response, status, HTTPException, Depends
 from fastapi.security import OAuth2PasswordRequestForm
 from app.db import SessionDep
 from app.models import User as UserModel
@@ -11,12 +11,21 @@ from app.auth import (
 
 router = APIRouter(prefix="/auth")
 
-@router.post("/token", summary="OAuth2 Token Endpoint", response_model=TokenSchema, include_in_schema=False)
+
+@router.post(
+    "/token",
+    summary="OAuth2 Token Endpoint",
+    response_model=TokenSchema,
+    include_in_schema=False,
+)
 async def login_for_access_token(
-    session: SessionDep,
-    form_data: OAuth2PasswordRequestForm = Depends()
+    session: SessionDep, form_data: OAuth2PasswordRequestForm = Depends()
 ):
-    user = session.query(UserModel).filter(UserModel.username == form_data.username).first()
+    user = (
+        session.query(UserModel)
+        .filter(UserModel.username == form_data.username)
+        .first()
+    )
 
     if not user or not verify_password(form_data.password, user.password):
         raise HTTPException(
@@ -30,19 +39,24 @@ async def login_for_access_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.post('/signup', summary="Create new user", response_model=User)
-async def create_user(session: SessionDep, form_data: OAuth2PasswordRequestForm = Depends()):
-    existing_user = session.query(UserModel).filter(UserModel.username == form_data.username).first()
+@router.post("/signup", summary="Create new user", response_model=User)
+async def create_user(
+    session: SessionDep, form_data: OAuth2PasswordRequestForm = Depends()
+):
+    existing_user = (
+        session.query(UserModel)
+        .filter(UserModel.username == form_data.username)
+        .first()
+    )
 
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="User with this username already exists"
+            detail="User with this username already exists",
         )
 
     new_user = UserModel(
-        username=form_data.username,
-        password=get_hashed_password(form_data.password)
+        username=form_data.username, password=get_hashed_password(form_data.password)
     )
 
     session.add(new_user)
@@ -51,9 +65,17 @@ async def create_user(session: SessionDep, form_data: OAuth2PasswordRequestForm 
     return User(id=new_user.id, username=new_user.username, password=new_user.password)
 
 
-@router.post('/login', summary="Create access token for user", include_in_schema=False)
-async def login(response: Response, session: SessionDep, form_data: OAuth2PasswordRequestForm = Depends()):
-    user = session.query(UserModel).filter(UserModel.username == form_data.username).first()
+@router.post("/login", summary="Create access token for user", include_in_schema=False)
+async def login(
+    response: Response,
+    session: SessionDep,
+    form_data: OAuth2PasswordRequestForm = Depends(),
+):
+    user = (
+        session.query(UserModel)
+        .filter(UserModel.username == form_data.username)
+        .first()
+    )
 
     if not user or not verify_password(form_data.password, user.password):
         raise HTTPException(
@@ -70,13 +92,17 @@ async def login(response: Response, session: SessionDep, form_data: OAuth2Passwo
         httponly=True,
         secure=True,
         samesite="Lax",
-        max_age=1800  # Token expiry in 30 minutes
+        max_age=1800,  # Token expiry in 30 minutes
     )
 
-    return {"message": "Login successful", "access_token": access_token, "token_type": "bearer"}
+    return {
+        "message": "Login successful",
+        "access_token": access_token,
+        "token_type": "bearer",
+    }
 
 
-@router.get('/logout', summary="Logout user by clearing token", include_in_schema=False)
+@router.get("/logout", summary="Logout user by clearing token", include_in_schema=False)
 async def logout(response: Response):
     try:
         response.delete_cookie(key="access_token")
@@ -84,5 +110,5 @@ async def logout(response: Response):
     except Exception:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Error logging out"
+            detail="Error logging out",
         )

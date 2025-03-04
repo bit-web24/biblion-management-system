@@ -8,7 +8,11 @@ def get_all_by_user(session: SessionDep, user_id: int):
 
 
 def get(session: SessionDep, biblion_id: int, user_id: int):
-    return session.query(Biblion).filter(Biblion.id == biblion_id, Biblion.user_id == user_id).first()
+    return (
+        session.query(Biblion)
+        .filter(Biblion.id == biblion_id, Biblion.user_id == user_id)
+        .first()
+    )
 
 
 def add(session: SessionDep, biblion: BiblionCreate, user_id: int):
@@ -17,7 +21,7 @@ def add(session: SessionDep, biblion: BiblionCreate, user_id: int):
         author=biblion.author,
         publisher=biblion.publisher,
         description=biblion.description,
-        user_id=user_id
+        user_id=user_id,
     )
     session.add(session_biblion)
     session.commit()
@@ -26,7 +30,11 @@ def add(session: SessionDep, biblion: BiblionCreate, user_id: int):
 
 
 def update(session: SessionDep, biblion_id: int, biblion: BiblionCreate, user_id: int):
-    _biblion = session.query(Biblion).filter(Biblion.id == biblion_id, Biblion.user_id == user_id).first()
+    _biblion = (
+        session.query(Biblion)
+        .filter(Biblion.id == biblion_id, Biblion.user_id == user_id)
+        .first()
+    )
     if not _biblion:
         return None
 
@@ -41,7 +49,11 @@ def update(session: SessionDep, biblion_id: int, biblion: BiblionCreate, user_id
 
 
 def delete(session: SessionDep, biblion_id: int, user_id: int):
-    _biblion = session.query(Biblion).filter(Biblion.id == biblion_id, Biblion.user_id == user_id).first()
+    _biblion = (
+        session.query(Biblion)
+        .filter(Biblion.id == biblion_id, Biblion.user_id == user_id)
+        .first()
+    )
     if not _biblion:
         return None
 
