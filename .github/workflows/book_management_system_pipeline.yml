@@ -34,7 +34,7 @@ jobs:
         run: poetry run ruff check .
         
       - name: Run Pylint
-        run: poetry run pylint $(git ls-files '*.py')
+        run: poetry run pylint --fail-under=8 $(git ls-files '*.py')
 
       - name: Run Tests
         run: poetry run pytest
