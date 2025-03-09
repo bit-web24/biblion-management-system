@@ -1,10 +1,7 @@
 from typing import Optional
 from sqlalchemy import String, Column, ForeignKey, Integer
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-
-
-class Base(DeclarativeBase):
-    pass
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from app.db import Base
 
 
 class User(Base):

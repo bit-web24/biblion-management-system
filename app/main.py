@@ -1,14 +1,16 @@
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from app.db import create_db_and_tables
+from app.db import create_db_and_tables, remove_db_and_tables
 from app.routers import biblion, auth
-
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
     print("Starting: creating database and tables.")
     create_db_and_tables()
     yield
+    if os.getenv("MODE", "test"):
+        remove_db_and_tables()
     print("Shutting Down: performing cleanup.")
 
 
@@ -22,7 +24,7 @@ async def root():
     return """Task: Build a RESTful API for a simple book management system.
         Requirements:
             1. Use FastAPI to create CRUD endpoints.
-            2. Store data in an SQLite or PostgreSQL database using SQLAlchemy.
+            2. Store data in an SQLite database using SQLAlchemy.
             3. Implement authentication with OAuth2 or JWT.
         """
 

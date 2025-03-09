@@ -171,4 +171,5 @@ cython_debug/
 .pypirc
 .idea/
 database.db
+test_database.db
 .ruff_cache/
